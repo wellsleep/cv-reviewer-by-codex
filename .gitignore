@@ -5,3 +5,5 @@ __pycache__/
 data/db.json
 data/uploads/*
 !data/uploads/.gitkeep
+data/uvicorn.out.log
+data/uvicorn.err.log

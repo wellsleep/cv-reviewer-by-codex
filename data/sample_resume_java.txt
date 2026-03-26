@@ -1,0 +1,25 @@
+张三
+手机：13812345678
+邮箱：zhangsan@example.com
+学历：本科
+
+求职意向：Java后端工程师
+
+工作经验：5年
+
+2022.03-至今 某电商科技公司
+职位：Java开发工程师
+负责订单中心、库存中心相关后端开发，基于 Spring Boot、Spring Cloud、MySQL、Redis、Kafka 构建微服务系统。
+参与高并发秒杀活动链路优化，负责接口性能优化、SQL优化、缓存一致性方案设计。
+
+2019.07-2022.02 某软件信息公司
+职位：后端开发工程师
+负责支付系统、商户管理系统接口开发，使用 Java、Spring Boot、MySQL、Redis、RabbitMQ。
+参与数据库索引优化、消息队列异步解耦、Linux 环境部署。
+
+项目经历
+订单中心系统：负责订单核心链路接口开发与性能优化，日均处理订单百万级。
+支付结算平台：负责支付回调、对账模块开发，提升稳定性与可观测性。
+
+技能
+Java、Spring、Spring Boot、Spring Cloud、MySQL、Redis、Kafka、RabbitMQ、Docker、Linux、微服务、分布式

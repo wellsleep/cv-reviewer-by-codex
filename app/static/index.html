@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Java后端简历初筛助手</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Resume Screener MVP</p>
+        <h1>Java后端简历初筛助手</h1>
+        <p class="subtitle">上传简历，自动评分，快速给出是否建议面试的初筛意见。</p>
+      </div>
+      <div class="hero-card">
+        <div class="hero-stat">
+          <span>岗位</span>
+          <strong>Java后端工程师</strong>
+        </div>
+        <div class="hero-stat">
+          <span>当前状态</span>
+          <strong id="healthStatus">检测中</strong>
+        </div>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="panel">
+        <div class="panel-header">
+          <h2>筛选规则</h2>
+          <div class="button-row compact">
+            <button id="refreshRuleBtn" class="ghost-btn" type="button">刷新</button>
+            <button id="editRuleBtn" class="primary-btn" type="button">编辑规则</button>
+          </div>
+        </div>
+        <div id="ruleCard" class="rule-card"></div>
+        <form id="ruleForm" class="rule-form hidden">
+          <p class="hint editor-tip">支持 YAML 和 JSON。建议直接编辑 value，保存时会校验格式。</p>
+          <textarea id="ruleEditor" class="rule-editor" spellcheck="false"></textarea>
+          <div class="button-row">
+            <button type="submit" class="primary-btn">保存规则</button>
+            <button id="cancelRuleBtn" type="button" class="ghost-btn">取消</button>
+          </div>
+          <div id="ruleMessage" class="message"></div>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>上传简历</h2>
+          <span class="hint">支持 txt / pdf / docx</span>
+        </div>
+        <form id="uploadForm" class="upload-form">
+          <input id="resumeFiles" type="file" name="files" multiple accept=".txt,.pdf,.docx" />
+          <div class="button-row">
+            <button type="submit" class="primary-btn">上传简历</button>
+            <button type="button" id="useSampleBtn" class="ghost-btn">提示：可先上传示例简历</button>
+          </div>
+        </form>
+        <div id="uploadMessage" class="message"></div>
+        <div id="uploadedList" class="uploaded-list"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>执行筛选</h2>
+          <span class="hint">输入已上传的简历 ID，逗号分隔</span>
+        </div>
+        <div class="run-form">
+          <input id="resumeIdsInput" type="text" placeholder="例如：101,102" />
+          <div class="button-row">
+            <button id="runBtn" class="primary-btn" type="button">开始筛选</button>
+            <button id="loadResultsBtn" class="ghost-btn" type="button">刷新结果</button>
+            <button id="rerunAllBtn" class="ghost-btn" type="button">全量重解析并重筛选</button>
+          </div>
+        </div>
+        <div id="runMessage" class="message"></div>
+      </section>
+
+      <section class="panel wide">
+        <div class="panel-header">
+          <h2>筛选结果</h2>
+          <span class="hint">点击候选人查看详情</span>
+        </div>
+        <div id="resultsTableWrap" class="table-wrap"></div>
+      </section>
+
+      <section class="panel wide">
+        <div class="panel-header">
+          <h2>候选人详情</h2>
+          <span class="hint">展示结构化画像、得分与面试建议</span>
+        </div>
+        <div id="detailCard" class="detail-empty">请选择一条筛选结果</div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -122,7 +122,10 @@ class ScreeningService:
             results = filtered
 
         reverse = sort_order.lower() != "asc"
-        results.sort(key=lambda item: item.get(sort_by, 0), reverse=reverse)
+        if sort_by in {"createdAt", "updatedAt"}:
+            results.sort(key=lambda item: item.get(sort_by) or "", reverse=reverse)
+        else:
+            results.sort(key=lambda item: item.get(sort_by, 0), reverse=reverse)
 
         total = len(results)
         start = max((page - 1) * page_size, 0)
@@ -143,6 +146,8 @@ class ScreeningService:
                     "skills": profile.get("skills", []),
                     "totalScore": item["totalScore"],
                     "recommendation": item["recommendation"],
+                    "createdAt": item.get("createdAt"),
+                    "updatedAt": item.get("updatedAt"),
                     "uploadedAt": resume.get("createdAt"),
                 }
             )
@@ -208,6 +213,16 @@ class ScreeningService:
             "comment": comment,
             "reviewedAt": datetime.now().isoformat(),
         }
+        storage.save(data)
+
+    def delete_result(self, screening_id):
+        data = storage.load()
+        before = len(data["screening_results"])
+        data["screening_results"] = [
+            item for item in data["screening_results"] if item["screeningId"] != screening_id
+        ]
+        if len(data["screening_results"]) == before:
+            raise HTTPException(status_code=404, detail="screening result not found")
         storage.save(data)
 
 

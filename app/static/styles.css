@@ -320,6 +320,16 @@ tr.clickable {
 }
 
 tr.clickable:hover {
+  background: rgba(31, 111, 95, 0.05);
+}
+
+.table-btn {
+  padding: 7px 12px;
+  font-size: 12px;
+  border-radius: 10px;
+}
+
+tr.clickable:hover {
   background: rgba(31, 111, 95, 0.06);
 }
 

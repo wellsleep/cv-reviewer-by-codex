@@ -29,7 +29,7 @@ def list_screening_results(
     pageSize: int = 10,
     recommendation: str = None,
     keyword: str = None,
-    sortBy: str = "totalScore",
+    sortBy: str = "createdAt",
     sortOrder: str = "desc",
 ):
     return ApiResponse(
@@ -53,3 +53,9 @@ def get_screening_result(screening_id: int):
 def review_screening_result(screening_id: int, payload: ScreeningReviewRequest):
     screening_service.save_manual_review(screening_id, payload.decision, payload.comment)
     return ApiResponse(message="review saved", data=True)
+
+
+@router.delete("/screenings/results/{screening_id}", response_model=ApiResponse)
+def delete_screening_result(screening_id: int):
+    screening_service.delete_result(screening_id)
+    return ApiResponse(message="deleted", data=True)

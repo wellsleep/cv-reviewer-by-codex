@@ -194,6 +194,24 @@ async function rerunAll() {
   await loadResults();
 }
 
+async function deleteResult(screeningId) {
+  if (!window.confirm("确认删除这条筛选结果吗？删除后不会影响原始简历文件。")) {
+    return;
+  }
+
+  await request(`/api/v1/screenings/results/${screeningId}`, {
+    method: "DELETE",
+  });
+
+  if (String(document.getElementById("detailCard").dataset.currentId || "") === String(screeningId)) {
+    document.getElementById("detailCard").dataset.currentId = "";
+    document.getElementById("detailCard").innerHTML = "请选择一条筛选结果";
+  }
+
+  showMessage("runMessage", "筛选结果已删除");
+  await loadResults();
+}
+
 async function loadResults() {
   const result = await request("/api/v1/screenings/results");
   state.results = result.data.list || [];
@@ -215,6 +233,8 @@ async function loadResults() {
           <th>技能</th>
           <th>总分</th>
           <th>建议</th>
+          <th>加入时间</th>
+          <th>操作</th>
         </tr>
       </thead>
       <tbody>
@@ -229,6 +249,8 @@ async function loadResults() {
                 <td>${(item.skills || []).slice(0, 4).map(tag).join("")}</td>
                 <td><span class="tag score">${item.totalScore}</span></td>
                 <td>${recommendationTag(item.recommendation)}</td>
+                <td>${formatTime(item.createdAt || item.uploadedAt)}</td>
+                <td><button class="ghost-btn table-btn delete-result-btn" type="button" data-id="${item.screeningId}">删除</button></td>
               </tr>
             `
           )
@@ -240,17 +262,27 @@ async function loadResults() {
   document.querySelectorAll("tr.clickable").forEach((row) => {
     row.addEventListener("click", () => loadDetail(row.dataset.id));
   });
+
+  document.querySelectorAll(".delete-result-btn").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      deleteResult(button.dataset.id).catch((error) => showMessage("runMessage", error.message));
+    });
+  });
 }
 
 async function loadDetail(screeningId) {
   const result = await request(`/api/v1/screenings/results/${screeningId}`);
   const detail = result.data;
 
+  const originalFileUrl = `${detail.originalFileUrl}?view=inline`;
+
+  document.getElementById("detailCard").dataset.currentId = String(screeningId);
   document.getElementById("detailCard").innerHTML = `
     <div class="detail-card">
       <div class="panel-header">
         <h3>${detail.basicInfo.name || "-"} <span class="tag score">${detail.totalScore}</span></h3>
-        <a class="ghost-btn link-btn" href="${detail.originalFileUrl}" target="_blank" rel="noopener noreferrer">
+        <a class="ghost-btn link-btn" href="${originalFileUrl}" target="_blank" rel="noopener noreferrer">
           查看原始简历
         </a>
       </div>
@@ -345,6 +377,23 @@ function renderProjects(projects) {
   return projects
     .map((item) => `<li><strong>${item.name || "项目"}</strong>${item.summary ? `：${item.summary}` : ""}</li>`)
     .join("");
+}
+
+function formatTime(value) {
+  if (!value) {
+    return "-";
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function pad(value) {
+  return String(value).padStart(2, "0");
 }
 
 document.getElementById("uploadForm").addEventListener("submit", (event) => {

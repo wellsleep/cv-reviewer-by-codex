@@ -41,4 +41,18 @@ def get_resume_file(resume_id: int):
     file_path = Path(resume["filePath"])
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="resume file not found")
-    return FileResponse(path=file_path, filename=resume["fileName"])
+    suffix = file_path.suffix.lower()
+    media_type = None
+    disposition = "attachment"
+    if suffix == ".pdf":
+        media_type = "application/pdf"
+        disposition = "inline"
+    elif suffix == ".txt":
+        media_type = "text/plain; charset=utf-8"
+        disposition = "inline"
+    return FileResponse(
+        path=file_path,
+        filename=resume["fileName"],
+        media_type=media_type,
+        content_disposition_type=disposition,
+    )
